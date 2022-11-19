@@ -22,8 +22,8 @@ async function getUsers(req = request, res = response){
 //Método que muestra un usuario a partir de su id
 async function getUser(req = request, res = response){
     const userId = req.params.id;
-    const user = await User.find({ _id: userId });
-    if (user.length) {
+    const user = await User.findOne({ _id: userId });
+    if (user) {
         res.json(user);
     } else {
         res.json({ message: `El usuario con id ${userId} no existe` });
@@ -50,8 +50,8 @@ async function addUser(req = request, res = response){
 //Método que elimina un usuario a partir de su id
 async function deleteUser(req = request, res = response){
     const userId = req.params.id;
-    const user = await User.find({ _id: userId });
-    if (user.length) {
+    const user = await User.findOne({ _id: userId });
+    if (user) {
         await User.deleteOne({ _id: userId });
         console.log("Borrado usuario con id: ", userId);
         res.json(user);
@@ -64,9 +64,9 @@ async function deleteUser(req = request, res = response){
 async function editUser(req = request, res = response){
     const userId = req.params.id;
     const { Password, Nombre, Apellidos, rol} = req.body;
-    const updatedUser = await User.find({ _id: userId });
+    const updatedUser = await User.findOne({ _id: userId });
 
-    if (updatedUser.length) {
+    if (updatedUser) {
         // Encriptar la contraseña
         const salt = bcryptjs.genSaltSync();
         updatedUser.Password = bcryptjs.hashSync( Password, salt );
@@ -74,10 +74,10 @@ async function editUser(req = request, res = response){
         //Actualizar usuario en la BD
         await User.updateOne({ _id: userId }, { Password, Nombre, Apellidos, rol } );
         console.log("Editando usuario con id: ", userId);
-        res.json(await User.find({ _id: userId }));
+        res.json(await User.findOne({ _id: userId }));
 
     } else {
-    res.json({ message: `El usuario con id ${userId} no existe` })
+        res.json({ message: `El usuario con id ${userId} no existe` })
     }
 }
 

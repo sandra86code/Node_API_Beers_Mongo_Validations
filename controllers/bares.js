@@ -21,17 +21,17 @@ async function getBars(req = request, res = response){
 }
 
 
-
 //Método que muestra un bar a partir de su id
 async function getBar(req = request, res = response){
     const barId = req.params.id;
-    const bar = await Bar.find({ _id: barId });
-    if (bar.length) {
+    const bar = await Bar.findOne({ _id: barId });
+    if (bar) {
         res.json(bar);
     } else {
         res.json({ message: `El bar con id ${barId} no existe` })
     }
 }
+
 
 //Método que añade un nuevo bar
 async function addBar(req = request, res = response){
@@ -50,8 +50,8 @@ async function addBar(req = request, res = response){
 //Método que elimina un bar a partir de su id
 async function deleteBar(req = request, res = response){
     const barId = req.params.id;
-    const bar = await Bar.find({ _id: barId });
-    if (bar.length) {
+    const bar = await Bar.findOne({ _id: barId });
+    if (bar) {
         await Bar.deleteOne({ _id: barId });
         console.log("Borrado bar con id: ", barId);
         res.json(bar);
@@ -65,12 +65,12 @@ async function deleteBar(req = request, res = response){
 async function editBar(req = request, res = response){
     const barId = req.params.id;
     const { Ciudad, Telefono } = req.body;
-    const updatedBar = await Bar.find({ _id: barId });
-    if (updatedBar.length) {
+    const updatedBar = await Bar.findOne({ _id: barId });
+    if (updatedBar) {
         //Actualizar bar en la BBDD
         await Bar.updateOne({ _id: barId }, { Ciudad, Telefono });
         console.log("Editando bar con id: ", barId);
-        res.json(await Bar.find({ _id: barId }));
+        res.json(await Bar.findOne({ _id: barId }));
     
     } else {
         res.json({ message: `El bar con id ${barId} no existe` })
