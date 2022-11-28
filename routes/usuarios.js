@@ -5,11 +5,14 @@ const {getUsers, getUser, addUser, deleteUser, editUser} = require('../controlle
 
 const { check } = require('express-validator')
 const { validateFields } = require('../helpers/validate-fields')
-const { isEmailUnique, isNickUnique, isValidRol } = require('../helpers/db-validators')
+const { isEmailUnique, isNickUnique, isValidRol, existsUser } = require('../helpers/db-validators')
 
 
 router.get('/', getUsers)
-router.get('/:id', getUser)
+router.get('/:id',[
+    check('id', 'No es un id correcto').isMongoId(),
+    validateFields,
+], getUser)
 router.post('/',[
     check('Nick', 'Nick is mandatory').not().isEmpty(),
     check('Nick').custom(isNickUnique),
@@ -28,8 +31,14 @@ router.post('/',[
     check('rol').custom( isValidRol),
     validateFields
 ], addUser)
-router.delete('/:id', deleteUser)
+router.delete('/:id', [
+    check('id', 'No es un id correcto').isMongoId(),
+    check('id').custom(existsUser),
+    validateFields
+],deleteUser)
 router.put('/:id', [
+    check('id', 'No es un id correcto').isMongoId(),
+    check('id').custom(existsUser),
     check('Password', 'Password is mandatory').not().isEmpty(),
     check('Password', 'Password must have between 5 and 35 characters').isLength({ min: 5, max: 35 }),
     check('Nombre','Nombre is mandatory').not().isEmpty(),

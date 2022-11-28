@@ -23,9 +23,9 @@ async function getUsers(req = request, res = response){
 async function getUser(req = request, res = response){
     const userId = req.params.id;
     const user = await User.findOne({ _id: userId });
-    if (user) {
+    if(user) {
         res.json(user);
-    } else {
+    }else {
         res.json({ message: `El usuario con id ${userId} no existe` });
     }
 }
@@ -47,38 +47,34 @@ async function addUser(req = request, res = response){
     });
 }
 
-//Método que elimina un usuario a partir de su id
+// //Método que elimina un usuario a partir de su id
+// async function deleteUser(req = request, res = response){
+//     const userId = req.params.id;
+//     const user = await User.findByIdAndDelete({ _id: userId });
+//     console.log("Borrado usuario con id: ", userId);
+//     res.json(user);
+// }
+
+//Método que modifica un parámetro de true a false para hacer ver que el usuario está inactivo
 async function deleteUser(req = request, res = response){
     const userId = req.params.id;
-    const user = await User.findOne({ _id: userId });
-    if (user) {
-        await User.deleteOne({ _id: userId });
-        console.log("Borrado usuario con id: ", userId);
-        res.json(user);
-    } else {
-        res.json({ message: `El usuario con id ${userId} no existe` })
-    }
+    const user = await User.findByIdAndUpdate(userId, { "state": false });
+    console.log("Desactivado usuario con id: ", userId);
+    res.json(user);
 }
 
 //Método que actualiza un usuario a partir de su id
 async function editUser(req = request, res = response){
     const userId = req.params.id;
     const { Password, Nombre, Apellidos, rol} = req.body;
-    const updatedUser = await User.findOne({ _id: userId });
+    // Encriptar la contraseña
+    const salt = bcryptjs.genSaltSync();
+    let encryptedPassword = bcryptjs.hashSync( Password, salt );
 
-    if (updatedUser) {
-        // Encriptar la contraseña
-        const salt = bcryptjs.genSaltSync();
-        updatedUser.Password = bcryptjs.hashSync( Password, salt );
-
-        //Actualizar usuario en la BD
-        await User.updateOne({ _id: userId }, { Password, Nombre, Apellidos, rol } );
-        console.log("Editando usuario con id: ", userId);
-        res.json(await User.findOne({ _id: userId }));
-
-    } else {
-        res.json({ message: `El usuario con id ${userId} no existe` })
-    }
+    //Actualizar usuario en la BD
+    const updatedUser = await User.findByIdAndUpdate(userId, { encryptedPassword, Nombre, Apellidos, rol } );
+    console.log("Editando usuario con id: ", userId);
+    res.json(await User.findById(userId));
 }
 
 

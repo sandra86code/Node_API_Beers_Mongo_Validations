@@ -5,10 +5,13 @@ const {getBeers, getBeer, addBeer, deleteBeer, editBeer} = require('../controlle
 
 const { check } = require('express-validator')
 const { validateFields } = require('../helpers/validate-fields')
-const { isBeerNameUnique } = require('../helpers/db-validators')
+const { isBeerNameUnique, existsBeer } = require('../helpers/db-validators')
 
 router.get('/', getBeers)
-router.get('/:id', getBeer)
+router.get('/:id', [
+    check('id', 'No es un id correcto').isMongoId(),
+    validateFields,
+], getBeer)
 router.post('/', [
     check('Nombre', 'Nombre is mandatory').not().isEmpty(),
     check('Nombre').custom(isBeerNameUnique),
@@ -23,8 +26,14 @@ router.post('/', [
     check('Precio', 'Precio must be a float number').isDecimal(),
     validateFields
 ], addBeer)
-router.delete('/:id', deleteBeer)
+router.delete('/:id', [
+    check('id', 'No es un id correcto').isMongoId(),
+    check('id').custom(existsBeer),
+    validateFields,
+], deleteBeer)
 router.put('/:id', [
+    check('id', 'No es un id correcto').isMongoId(),
+    check('id').custom(existsBeer),
     check('Descripcion', 'Descripcion is mandatory').not().isEmpty(),
     check('Descripcion', 'Descripcion must have between 5 and 240 characters').isLength({min: 5, max: 240 }),
     check('Graduacion', 'Graduacion is mandatory').not().isEmpty(),

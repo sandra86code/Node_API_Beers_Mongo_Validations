@@ -25,10 +25,10 @@ async function getBars(req = request, res = response){
 async function getBar(req = request, res = response){
     const barId = req.params.id;
     const bar = await Bar.findOne({ _id: barId });
-    if (bar) {
+    if(bar) {
         res.json(bar);
-    } else {
-        res.json({ message: `El bar con id ${barId} no existe` })
+    }else {
+        res.json({ message: `La cerveza ${barId} no existe` });
     }
 }
 
@@ -50,14 +50,9 @@ async function addBar(req = request, res = response){
 //Método que elimina un bar a partir de su id
 async function deleteBar(req = request, res = response){
     const barId = req.params.id;
-    const bar = await Bar.findOne({ _id: barId });
-    if (bar) {
-        await Bar.deleteOne({ _id: barId });
-        console.log("Borrado bar con id: ", barId);
-        res.json(bar);
-    } else {
-        res.json({ message: `El bar con id ${barId} no existe` })
-    }
+    const bar = await Bar.findByIdAndDeleteById(id);
+    console.log("Borrado bar con id: ", barId);
+    res.json(bar);
 }
 
 
@@ -65,16 +60,9 @@ async function deleteBar(req = request, res = response){
 async function editBar(req = request, res = response){
     const barId = req.params.id;
     const { Ciudad, Telefono } = req.body;
-    const updatedBar = await Bar.findOne({ _id: barId });
-    if (updatedBar) {
-        //Actualizar bar en la BBDD
-        await Bar.updateOne({ _id: barId }, { Ciudad, Telefono });
-        console.log("Editando bar con id: ", barId);
-        res.json(await Bar.findOne({ _id: barId }));
-    
-    } else {
-        res.json({ message: `El bar con id ${barId} no existe` })
-    }
+    const updatedBar = await Bar.findByIdAndUpdate(id, { Ciudad, Telefono });
+    console.log("Editando bar con id: ", barId);
+    res.json(await Bar.findById(barId));
 }
 
 

@@ -22,12 +22,12 @@ async function getBeers(req = request, res = response){
 
 //Método que muestra una cerveza a partir de su id
 async function getBeer(req = request, res = response) {
-    const id = req.params.id
-    const beer = await Cerveza.findOne({ _id: id });
+    const beerId = req.params.id
+    const beer = await Cerveza.findOne({ _id: beerId });
     if (beer) {
         res.json(beer);
     } else {
-        res.json({ message: `La cerveza ${id} no existe` })
+        res.json({ message: `La cerveza con id ${beerId} no existe` })
     }
 }
 
@@ -36,11 +36,9 @@ async function getBeer(req = request, res = response) {
 async function addBeer(req = request, res = response) {
     const { Nombre, Descripcion, Graduacion, Envase, Precio } = req.body;
     const beer = new Cerveza({ Nombre, Descripcion, Graduacion, Envase, Precio });
-
     // Guardar en BD
     await beer.save();
     console.log('Cerveza añadida')
-    console.log(parseFloat(beer.Graduacion));
     res.json({
         beer
     });
@@ -50,14 +48,9 @@ async function addBeer(req = request, res = response) {
 //Método que elimina una cerveza a partir de su id
 async function deleteBeer(req = request, res = response) {
     const beerId = req.params.id;
-    const beer = await Cerveza.findOne({ _id: beerId });
-    if (beer) {
-        await Cerveza.deleteOne({ _id: beerId });
-        console.log("Borrada cerveza con id: ", beerId);
-        res.json(beer);
-    } else {
-        res.json({ message: `La cerveza con id ${beerId} no existe` })
-    }
+    const beer = await Cerveza.findByIdAndDelete(beerId);
+    console.log("Borrada cerveza con id: ", beerId);
+    res.json(beer);
 }
 
 
@@ -65,16 +58,9 @@ async function deleteBeer(req = request, res = response) {
 async function editBeer(req = request, res = response) {
     const beerId = req.params.id;
     const { Descripcion, Graduacion, Envase, Precio } = req.body;
-    const updatedBeer = await Cerveza.findOne({ _id: beerId });
-
-    if (updatedBeer) {
-        //Actualizar cerveza en BD
-        await Cerveza.updateOne({ _id: beerId }, { Descripcion, Graduacion, Envase, Precio });
-        console.log("Editando cerveza con id: ", beerId);
-        res.json( await Cerveza.findOne({ _id: beerId }));
-    } else {
-    res.json({ message: `La cerveza con id ${beerId} no existe` })
-    }
+    const updatedBeer = await Cerveza.findByIdAndUpdate(beerId);
+    console.log("Editando cerveza con id: ", beerId);
+    res.json( await Cerveza.findById(beerId) );
 }
 
 

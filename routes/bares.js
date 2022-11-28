@@ -5,10 +5,13 @@ const {getBars, getBar, addBar, deleteBar, editBar} = require('../controllers/ba
 
 const { check } = require('express-validator')
 const { validateFields } = require('../helpers/validate-fields')
-const { isBarNameUnique, isBarAddressUnique, isBarPhoneUnique } = require('../helpers/db-validators')
+const { isBarNameUnique, isBarAddressUnique, isBarPhoneUnique, existsBar } = require('../helpers/db-validators')
 
 router.get('/', getBars)
-router.get('/:id', getBar)
+router.get('/:id', [
+    check('id', 'No es un id correcto').isMongoId(),
+    validateFields,
+], getBar)
 router.post('/', [
     check('Nombre', 'Nombre is mandatory').not().isEmpty(),
     check('Nombre').custom(isBarNameUnique),
@@ -22,8 +25,14 @@ router.post('/', [
     check('Telefono', 'Telefono must have between 7 and 14 characters').isLength({ min: 7, max: 14 }),
     validateFields
 ], addBar)
-router.delete('/:id', deleteBar)
+router.delete('/:id', [
+    check('id', 'No es un id correcto').isMongoId(),
+    check('id').custom(existsBar),
+    validateFields,
+], deleteBar)
 router.put('/:id', [
+    check('id', 'No es un id correcto').isMongoId(),
+    check('id').custom(existsBar),
     check('Ciudad', 'Ciudad must have between 2 and 40 characters').isLength({ min: 2, max: 40 }),
     check('Telefono', 'Telefono is mandatory').not().isEmpty(),
     check('Telefono', 'Telefono must have between 7 and 14 characters').isLength({ min: 7, max: 14 }),

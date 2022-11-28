@@ -60,4 +60,25 @@ const isBarPhoneUnique = async (Telefono)=> {
 		}
 }
 
-module.exports = { isValidRol, isEmailUnique, isNickUnique, isBeerNameUnique, isBarNameUnique, isBarAddressUnique, isBarPhoneUnique }
+const existsUser = async (id)=> {
+	const user = await Usuario.findById(id);
+		if (!user) {
+			throw new Error(`UserId ${id} doesn't exist in database`)
+		}
+}
+
+const existsBeer = async (id)=> {
+	const beer = await Cerveza.findById(id);
+		if (!beer) {
+			throw new Error(`BeerId ${id} doesn't exist in database`)
+		}
+}
+
+const existsBar = async (id)=> {
+	const bar = await Bar.findById(id);
+		if (!bar) {
+			throw new Error(`BarId ${id} doesn't exist in database`)
+		}
+}
+
+module.exports = { isValidRol, isEmailUnique, isNickUnique, isBeerNameUnique, isBarNameUnique, isBarAddressUnique, isBarPhoneUnique, existsUser, existsBar, existsBeer }

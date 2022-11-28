@@ -27,10 +27,11 @@ const UserSchema = Schema({
         type: String,
         required: true,
         emun: ['ADMIN_ROLE', 'USER_ROLE']
+    },
+    state: {
+        type: Boolean,
+        default: true,
     }
-
-    
-    
 })
 
 module.exports = model( 'Usuario', UserSchema )
