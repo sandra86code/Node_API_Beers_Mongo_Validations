@@ -13,7 +13,7 @@ router.get('/:id',[
     check('id', 'No es un id correcto').isMongoId(),
     validateFields,
 ], getUser)
-router.post('/',[
+router.post('/login',[
     check('Nick', 'Nick is mandatory').not().isEmpty(),
     check('Nick').custom(isNickUnique),
     check('Nick', 'Nick must have between 3 and 25 characters').isLength({min: 3, max: 25}),

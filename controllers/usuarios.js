@@ -15,7 +15,7 @@ async function getUsers(req = request, res = response){
     if(users.length) {
         res.json(users);
     }else {
-        res.json({ message: 'La búsqueda no ha arrojado ningún resultado'})
+        res.status(404).json({ message: 'La búsqueda no ha arrojado ningún resultado'})
     }
 }
 
@@ -26,7 +26,7 @@ async function getUser(req = request, res = response){
     if(user) {
         res.json(user);
     }else {
-        res.json({ message: `El usuario con id ${userId} no existe` });
+        res.status(404).json({ message: `El usuario con id ${userId} no existe` });
     }
 }
 

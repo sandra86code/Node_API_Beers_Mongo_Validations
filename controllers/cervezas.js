@@ -15,7 +15,7 @@ async function getBeers(req = request, res = response){
     if(beers.length) {
         res.json(beers);
     }else {
-        res.json({ message: 'La búsqueda no ha arrojado ningún resultado'})
+        res.status(404).json({ message: 'La búsqueda no ha arrojado ningún resultado'})
     }
 }
 
@@ -27,7 +27,7 @@ async function getBeer(req = request, res = response) {
     if (beer) {
         res.json(beer);
     } else {
-        res.json({ message: `La cerveza con id ${beerId} no existe` })
+        res.status(404).json({ message: `La cerveza con id ${beerId} no existe` })
     }
 }
 

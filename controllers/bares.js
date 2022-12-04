@@ -15,7 +15,7 @@ async function getBars(req = request, res = response){
     if(bars.length) {
         res.json(bars);
     }else {
-        res.json({ message: 'La búsqueda no ha arrojado ningún resultado'})
+        res.status(404).json({ message: 'La búsqueda no ha arrojado ningún resultado'})
     }
     
 }
@@ -28,7 +28,7 @@ async function getBar(req = request, res = response){
     if(bar) {
         res.json(bar);
     }else {
-        res.json({ message: `La cerveza ${barId} no existe` });
+        res.status(404).json({ message: `La cerveza ${barId} no existe` });
     }
 }
 
