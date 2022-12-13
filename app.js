@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const app = express()
 
-
+const vinos = require('./routes/vinos')
 const cervezas = require('./routes/cervezas')
 const usuarios = require('./routes/usuarios')
 const bares = require('./routes/bares')
@@ -20,6 +20,7 @@ connectAtlas()
 app.use(express.json())
 
 //ROUTES
+app.use('/vinos', vinos)
 app.use('/cervezas', cervezas)
 app.use('/bares', bares)
 app.use('/usuarios', usuarios)

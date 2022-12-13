@@ -2,7 +2,7 @@ const Rol = require('../models/rol')
 const Usuario  = require('../models/usuario')
 const Cerveza  = require('../models/cerveza')
 const Bar  = require('../models/bar')
-
+const Vino  = require('../models/vino')
 
 
 const isValidRol = async (rol = '')=> {
@@ -35,6 +35,8 @@ const isBeerNameUnique = async (Nombre) => {
 			throw new Error(`Nombre ${Nombre} already exists in database`)
 		}
 }
+
+
 
 
 const isBarNameUnique = async (Nombre)=> {
@@ -81,4 +83,19 @@ const existsBar = async (id)=> {
 		}
 }
 
-module.exports = { isValidRol, isEmailUnique, isNickUnique, isBeerNameUnique, isBarNameUnique, isBarAddressUnique, isBarPhoneUnique, existsUser, existsBar, existsBeer }
+
+const isWineNameUnique = async (name) => {
+	const existsWineName = await Vino.findOne({ name });
+		if (existsWineName) {
+			throw new Error(`Wine called ${name} already exists in database`)
+		}
+}
+
+const existsWine = async (id)=> {
+	const wine = await Vino.findById(id);
+		if (!wine) {
+			throw new Error(`Wine with id ${id} doesn't exist in database`)
+		}
+}
+
+module.exports = { existsWine, isWineNameUnique, isValidRol, isEmailUnique, isNickUnique, isBeerNameUnique, isBarNameUnique, isBarAddressUnique, isBarPhoneUnique, existsUser, existsBar, existsBeer }

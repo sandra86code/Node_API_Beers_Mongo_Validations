@@ -59,8 +59,8 @@ async function addUser(req = request, res = response){
 async function deleteUser(req = request, res = response){
     const userId = req.params.id;
     const user = await User.findByIdAndUpdate(userId, { "state": false });
-    console.log("Desactivado usuario con id: ", userId);
-    res.json(user);
+    const authenticatedUser = req.user;
+    res.json( { user, authenticatedUser } );
 }
 
 //Método que actualiza un usuario a partir de su id

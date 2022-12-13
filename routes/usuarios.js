@@ -4,8 +4,10 @@ const router = express.Router()
 const {getUsers, getUser, addUser, deleteUser, editUser} = require('../controllers/usuarios')
 
 const { check } = require('express-validator')
+const { validateJWT } = require('../middleware/validate-jwt');
 const { validateFields } = require('../helpers/validate-fields')
-const { isEmailUnique, isNickUnique, isValidRol, existsUser } = require('../helpers/db-validators')
+const { isEmailUnique, isNickUnique, isValidRol, existsUser } = require('../helpers/db-validators');
+const { isAdminRol, hasRol } = require('../middleware/validate-rol');
 
 
 router.get('/', getUsers)
@@ -13,7 +15,7 @@ router.get('/:id',[
     check('id', 'No es un id correcto').isMongoId(),
     validateFields,
 ], getUser)
-router.post('/login',[
+router.post('/',[
     check('Nick', 'Nick is mandatory').not().isEmpty(),
     check('Nick').custom(isNickUnique),
     check('Nick', 'Nick must have between 3 and 25 characters').isLength({min: 3, max: 25}),
@@ -32,6 +34,9 @@ router.post('/login',[
     validateFields
 ], addUser)
 router.delete('/:id', [
+    validateJWT,
+    // isAdminRol,
+    hasRol('ADMIN_ROLE', 'DELETE_ROLE'),
     check('id', 'No es un id correcto').isMongoId(),
     check('id').custom(existsUser),
     validateFields
