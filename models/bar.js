@@ -18,6 +18,9 @@ const BarSchema = Schema({
         type: String,
         required: [true, 'El teléfono es obligatorio']
     },
+    img: {
+        type: String
+    }
 });
 
 module.exports = model( 'Bar', BarSchema );

@@ -10,7 +10,8 @@ const cervezas = require('./routes/cervezas')
 const usuarios = require('./routes/usuarios')
 const bares = require('./routes/bares')
 const auth = require('./routes/auth')
-const upload = require ('./routes/upload');
+const uploads = require ('./routes/uploads');
+
 
 // DATABASE CONNECTION
 async function connectAtlas(){
@@ -22,7 +23,8 @@ connectAtlas()
 app.use(express.json())
 app.use(fileUpload({
     useTempFiles : true,
-    tempFileDir : '/tmp/'
+    tempFileDir : '/tmp/',
+    createParentPath: true
 }));
 
 //ROUTES
@@ -31,7 +33,7 @@ app.use('/cervezas', cervezas)
 app.use('/bares', bares)
 app.use('/usuarios', usuarios)
 app.use('/auth', auth)
-app.use('/upload', upload)
+app.use('/upload', uploads)
 
 
 app.listen(process.env.PORT)
